@@ -30,7 +30,7 @@ def featureNormalize(X):
         X_norm[:, feature_index] /= std
         mu[feature_index] = mean
         sigma[feature_index] = std
-    return X_norm
+    return X_norm, mu, sigma
 
 
 # SINGLE VARIABLE LINEAR REGRESSION #
@@ -131,7 +131,7 @@ def demoSinglevar():
         
 def demoMultivar():    
     data = np.loadtxt('data/data2.txt', delimiter=',')
-    data = featureNormalize(data)
+    data, mu, sigma = featureNormalize(data)
     data = np.column_stack((np.ones(data.shape[0]), data))
     features = data[:, :3]
     labels = data[:, 3]
@@ -144,6 +144,14 @@ def demoMultivar():
     plt.title("Iterations vs. Cost")
     plt.ylabel('Cost')
     plt.xlabel('Iterations')
+    
+    example = np.array([2500, 3])
+    example = (example - mu[:2]) / sigma[:2]
+    prediction = predictMultivar(example, theta) 
+    prediction = (prediction * sigma[2]) + mu[2]
+    print(prediction)
+    
+demoMultivar()
 
 
 
